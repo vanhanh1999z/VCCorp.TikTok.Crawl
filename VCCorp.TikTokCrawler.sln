@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VCCorp.TikTokCrawler", "VCCorp.TikTokCrawler\VCCorp.TikTokCrawler.csproj", "{367D843F-7D2C-47E2-8180-FBEA949C541D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crwal.Core", "..\Crawl_Core\Crwal.Core\Crwal.Core\Crwal.Core.csproj", "{372DE665-B14B-4D3F-AAD4-781E8A0EF48D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{367D843F-7D2C-47E2-8180-FBEA949C541D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{367D843F-7D2C-47E2-8180-FBEA949C541D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{367D843F-7D2C-47E2-8180-FBEA949C541D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{367D843F-7D2C-47E2-8180-FBEA949C541D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{372DE665-B14B-4D3F-AAD4-781E8A0EF48D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{372DE665-B14B-4D3F-AAD4-781E8A0EF48D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{372DE665-B14B-4D3F-AAD4-781E8A0EF48D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{372DE665-B14B-4D3F-AAD4-781E8A0EF48D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2F013AC-6C89-4C7A-B6AE-3050DD1B3366}
+	EndGlobalSection
+EndGlobal

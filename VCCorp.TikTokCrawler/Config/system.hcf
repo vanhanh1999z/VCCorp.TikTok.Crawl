@@ -1,0 +1,29 @@
+﻿{
+  "ConfigSystem": {
+    "_topicTiktokContent": "crawler-data-tiktok",
+    "_topicTiktokComment": "crawler-data-tiktok-comment",
+    "_topicFbCampaign": "fb-campaign-crawler",
+    "_topicTwitter": "datacollection-twitter-crawler",
+    "_topicFbads": "fb-ads-crawler",
+    "_topicFbPriorityComment": "fb-group-cmt-crawler",
+    "ServerLink": "10.3.48.81:9092,10.3.48.90:9092,10.3.48.91:9092",
+    "UserDie": 100,
+    "GetTokenBack": 101,
+    "PageInvaliddate": 105,
+
+    "Status": 0,
+    "Platform": "tiktok",
+
+    "KafkaConfig": {
+      "SeverLink": "localhost:29092,localhost:29092",
+      "TopicTikTokPost": "crawler-data-tiktok"
+    }
+  },
+  "DbConnection": {
+    "ConnectionToTableLinkProduct": "Data Source=localhost,3306;Initial Catalog = social_index_v2; User ID = root; Password=Abcde12345",
+    "ConnectionToTableSiPost": "Data Source=localhost,3306;Initial Catalog = social_index_v2; User ID = root; Password = Abcde12345-",
+    "ConnectionToTableReportDaily": "Server=localhost;User ID = root;Password=123456aA@;",
+    "KeyBot": "5510917559:AAFc29FuT3isv31rJJ-Hf3U8J3TQm7wUjn8",
+    "IdTeleGramBotGroupCommentEco": 966893697
+  }
+}
