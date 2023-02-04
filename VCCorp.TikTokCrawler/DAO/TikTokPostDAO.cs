@@ -332,20 +332,21 @@ namespace VCCorp.TikTokCrawler.DAO
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        public List<string> GetHashtagInTableSiHastagByCurrentDate(string datetime)
+        public async Task<List<string>> GetHashtagInTableSiHastagByCurrentDate(string datetime)
         {
             List<string> data = new List<string>();
-            string query = $"select * from social_index_v2.tiktok_hastag  WHERE create_time = '{datetime}' ";
+            //string query = $"select * from social_index_v2.tiktok_hastag  WHERE create_time = '{datetime}' ";
+            string query = $"select * from social_index_v2.si_hashtag ";
             try
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, _conn))
                 {
                     _conn.Open();
-                    using (DbDataReader reader = cmd.ExecuteReader())
+                    using (DbDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
-                            data.Add(reader["hastag"].ToString());
+                            data.Add(reader["hashtag"].ToString());
 
                         }
                     }

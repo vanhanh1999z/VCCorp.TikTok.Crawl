@@ -28,7 +28,9 @@ namespace VCCorp.TikTokCrawler
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Logging.Infomation("--- Khởi tạo ứng dụng thành công ---");
-                Application.Run(new Form1());
+                var f1 = new Form1();
+                TiktokRuntime.TiktokForm = f1;
+                Application.Run(f1);
                 Logging.Infomation("--- Kết thúc ---");
             }
             catch (Exception ex)
@@ -36,7 +38,7 @@ namespace VCCorp.TikTokCrawler
                 Logging.Error(ex); ;
             }
         }
-        public static void Init()
+        public static async void Init()
         {
             try
             {
@@ -52,7 +54,7 @@ namespace VCCorp.TikTokCrawler
                 }
                 else
                 {
-                    Logging.Error("Không tìm thấy file cấu hình");
+                    await Logging.ErrorAsync("Không tìm thấy file cấu hình");
                 }
             }
             catch (Exception ex)
@@ -60,7 +62,7 @@ namespace VCCorp.TikTokCrawler
                 Logging.Error(ex);
             }
         }
-        public static void LoadConfig(TiktokSystemDTO config)
+        public static async void LoadConfig(TiktokSystemDTO config)
         {
             try
             {
@@ -87,11 +89,11 @@ namespace VCCorp.TikTokCrawler
                     };
                 }
                 Logging.Infomation("Load cấu hình hệ thống thành công");
-                Logging.Infomation(TiktokRuntime.Config.ToJson());
+                //Logging.Infomation(TiktokRuntime.Config.ToJson());
             }
             catch (Exception ex)
             {
-                Logging.Error("Load cấu hình hệ thống thất bại");
+                await Logging.ErrorAsync("Load cấu hình hệ thống thất bại");
                 Logging.Error(ex);
                 throw;
             }

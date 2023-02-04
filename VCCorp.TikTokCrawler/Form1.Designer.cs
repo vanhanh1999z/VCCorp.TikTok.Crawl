@@ -28,73 +28,139 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnStart = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btKingLive = new Ext.RButton.RJButton();
+            this.btStartedTag = new Ext.RButton.RJButton();
+            this.btResume = new Ext.RButton.RJButton();
+            this.btResumeLastTag = new Ext.RButton.RJButton();
+            this.txtUrl = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(383, 55);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "TikTokCrawler";
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Location = new System.Drawing.Point(12, 120);
+            this.panel1.Location = new System.Drawing.Point(12, 75);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1434, 534);
+            this.panel1.Size = new System.Drawing.Size(1220, 524);
             this.panel1.TabIndex = 1;
             // 
-            // btnStart
+            // btKingLive
             // 
-            this.btnStart.Location = new System.Drawing.Point(532, 50);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(115, 23);
-            this.btnStart.TabIndex = 2;
-            this.btnStart.Text = "Start Kinglive.vn";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.button1_Click);
+            this.btKingLive.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(180)))), ((int)(((byte)(216)))));
+            this.btKingLive.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(180)))), ((int)(((byte)(216)))));
+            this.btKingLive.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btKingLive.BorderRadius = 7;
+            this.btKingLive.BorderSize = 0;
+            this.btKingLive.FlatAppearance.BorderSize = 0;
+            this.btKingLive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btKingLive.ForeColor = System.Drawing.Color.White;
+            this.btKingLive.Location = new System.Drawing.Point(18, 18);
+            this.btKingLive.Name = "btKingLive";
+            this.btKingLive.Size = new System.Drawing.Size(102, 33);
+            this.btKingLive.TabIndex = 0;
+            this.btKingLive.Text = "Kinglive.vn";
+            this.btKingLive.TextColor = System.Drawing.Color.White;
+            this.btKingLive.UseVisualStyleBackColor = false;
+            this.btKingLive.Click += new System.EventHandler(this.btKingLive_Click);
             // 
-            // button1
+            // btStartedTag
             // 
-            this.button1.Location = new System.Drawing.Point(719, 50);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(127, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Start Tag";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.btStartedTag.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(157)))), ((int)(((byte)(143)))));
+            this.btStartedTag.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(157)))), ((int)(((byte)(143)))));
+            this.btStartedTag.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btStartedTag.BorderRadius = 7;
+            this.btStartedTag.BorderSize = 0;
+            this.btStartedTag.FlatAppearance.BorderSize = 0;
+            this.btStartedTag.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btStartedTag.ForeColor = System.Drawing.Color.White;
+            this.btStartedTag.Location = new System.Drawing.Point(150, 18);
+            this.btStartedTag.Name = "btStartedTag";
+            this.btStartedTag.Size = new System.Drawing.Size(178, 33);
+            this.btStartedTag.TabIndex = 0;
+            this.btStartedTag.Text = "Bắt đầu crwal";
+            this.btStartedTag.TextColor = System.Drawing.Color.White;
+            this.btStartedTag.UseVisualStyleBackColor = false;
+            this.btStartedTag.Click += new System.EventHandler(this.btStartedTag_Click);
+            // 
+            // btResume
+            // 
+            this.btResume.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.btResume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(111)))), ((int)(((byte)(81)))));
+            this.btResume.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(111)))), ((int)(((byte)(81)))));
+            this.btResume.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btResume.BorderRadius = 7;
+            this.btResume.BorderSize = 0;
+            this.btResume.FlatAppearance.BorderSize = 0;
+            this.btResume.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btResume.ForeColor = System.Drawing.Color.White;
+            this.btResume.Location = new System.Drawing.Point(918, 18);
+            this.btResume.Name = "btResume";
+            this.btResume.Size = new System.Drawing.Size(102, 33);
+            this.btResume.TabIndex = 0;
+            this.btResume.Text = "Tiếp tục";
+            this.btResume.TextColor = System.Drawing.Color.White;
+            this.btResume.UseVisualStyleBackColor = false;
+            this.btResume.Click += new System.EventHandler(this.btResume_Click);
+            // 
+            // btResumeLastTag
+            // 
+            this.btResumeLastTag.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(123)))), ((int)(((byte)(157)))));
+            this.btResumeLastTag.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(123)))), ((int)(((byte)(157)))));
+            this.btResumeLastTag.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btResumeLastTag.BorderRadius = 7;
+            this.btResumeLastTag.BorderSize = 0;
+            this.btResumeLastTag.FlatAppearance.BorderSize = 0;
+            this.btResumeLastTag.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btResumeLastTag.ForeColor = System.Drawing.Color.White;
+            this.btResumeLastTag.Location = new System.Drawing.Point(1050, 18);
+            this.btResumeLastTag.Name = "btResumeLastTag";
+            this.btResumeLastTag.Size = new System.Drawing.Size(178, 33);
+            this.btResumeLastTag.TabIndex = 9;
+            this.btResumeLastTag.Text = "Tiếp tục với tag cuối cùng";
+            this.btResumeLastTag.TextColor = System.Drawing.Color.White;
+            this.btResumeLastTag.UseVisualStyleBackColor = false;
+            this.btResumeLastTag.Click += new System.EventHandler(this.rjButton1_Click);
+            // 
+            // txtUrl
+            // 
+            this.txtUrl.Enabled = false;
+            this.txtUrl.Location = new System.Drawing.Point(367, 25);
+            this.txtUrl.Name = "txtUrl";
+            this.txtUrl.Size = new System.Drawing.Size(529, 20);
+            this.txtUrl.TabIndex = 10;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1458, 666);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.btnStart);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(1244, 611);
+            this.Controls.Add(this.txtUrl);
+            this.Controls.Add(this.btKingLive);
+            this.Controls.Add(this.btStartedTag);
+            this.Controls.Add(this.btResume);
+            this.Controls.Add(this.btResumeLastTag);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Crawl dữ liệu TikTok";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button btnStart;
-        private System.Windows.Forms.Button button1;
+        private Ext.RButton.RJButton btResumeLastTag;
+        private Ext.RButton.RJButton btResume;
+        private Ext.RButton.RJButton btStartedTag;
+        private Ext.RButton.RJButton btKingLive;
+        private System.Windows.Forms.TextBox txtUrl;
     }
 }
 

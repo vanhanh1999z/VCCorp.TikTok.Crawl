@@ -1,4 +1,5 @@
-﻿using CefSharp.WinForms;
+﻿using CefSharp.DevTools.Debugger;
+using CefSharp.WinForms;
 using Crwal.Core.Attribute;
 using Crwal.Core.Base;
 using Crwal.Core.Log;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using VCCorp.TikTokCrawler.Common;
 using VCCorp.TikTokCrawler.DAO;
 using VCCorp.TikTokCrawler.Model;
@@ -25,28 +27,41 @@ namespace VCCorp.TikTokCrawler.Controller
         private ChromiumWebBrowser _browser = null;
         private readonly HtmlAgilityPack.HtmlDocument _document = new HtmlAgilityPack.HtmlDocument();
         private string URL_TIKTOK = "https://www.tiktok.com/";
-        private const string _jsAutoScroll = @"window.scrollTo(0, document.body.scrollHeight)/3";
         private const string _jsLoadMore = @"document.getElementsByClassName('tiktok-154bc22-ButtonMore')[0].click()";
         private string path = "D:\\ListHashTag.txt";
-        private string _currHashtag = "";
+        public string _currHashtag = "";
+        public List<string> _tags = new List<string>();
 
         public TikTokHashTagController(ChromiumWebBrowser browser)
         {
             _browser = browser;
         }
-
+        public TikTokHashTagController()
+        {
+        }
         public async Task CrawlData()
         {
-            //import url từ db theo days
-            //await GetHashtag();
+            if (_tags == null || _tags.Count <= 0)
+            {
+                _tags = await GetHashtagAsync();
 
-            //import cứng URL
-            //await CrawlHashtag("https://www.tiktok.com/search?q=Entertainment");
-
-            //import url từ file txt
+            }
+            for (int i = 0; i < _tags.Count; i++)
+            {
+                _currHashtag = _tags[i];
+                string Url = "https://www.tiktok.com/search?q=" + _tags[i];
+                TiktokRuntime.TiktokForm.SetLabelText(Url);
+                var result = await CrawlHashtag(Url);
+                if (result.Count == 0 || result == null)
+                {
+                    await Logging.ErrorAsync("Vui lòng đăng nhập nick khác để tiếp tục crawl");
+                    TiktokRuntime.IdxR = _tags.IndexOf(_currHashtag);
+                    TiktokRuntime.Tags = _tags;
+                    break;
+                }
+            }
             Logging.Infomation("Đầu crwal dữ liệu TikTokHashTagController.CrawlData");
-
-            await GetHashTagFromFile();
+            //await GetHashTagFromFile();
         }
 
         /// <summary>
@@ -68,15 +83,66 @@ namespace VCCorp.TikTokCrawler.Controller
             Logging.Infomation("      *************** HOÀN TẤT **************");
             Logging.Infomation("**************************************************");
         }
+        public async Task ResumeCrawl(int idx)
+        {
+            if (_tags == null || _tags.Count <= 0)
+            {
+                _tags = await GetHashtagAsync();
 
+            }
+            for (int i = idx; i < _tags.Count; i++)
+            {
+                _currHashtag = _tags[i];
+                string Url = "https://www.tiktok.com/search?q=" + _tags[i];
+                TiktokRuntime.TiktokForm.SetLabelText(Url);
+                var result = await CrawlHashtag(Url);
+                if (result.Count == 0 || result == null)
+                {
+                    await Logging.ErrorAsync("Vui lòng đăng nhập nick khác để tiếp tục crawl");
+                    break;
+                }
+            }
+        }
+        public async Task ResumeCrawl(string currentHashTag)
+        {
+            try
+            {
+                if (_tags == null || _tags.Count <= 0)
+                {
+                    _tags = await GetHashtagAsync();
+                }
+                int idx = _tags.IndexOf(currentHashTag);
+                if (idx != -1)
+                {
+                    for (int i = idx; i < _tags.Count; i++)
+                    {
+                        _currHashtag = _tags[i];
+                        string Url = "https://www.tiktok.com/search?q=" + _tags[i];
+                        TiktokRuntime.TiktokForm.SetLabelText(Url);
+                        var result = await CrawlHashtag(Url);
+                        if (result.Count == 0 || result == null)
+                        {
+                            await Logging.ErrorAsync("Vui lòng đăng nhập nick khác để tiếp tục crawl");
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(ex);
+            }
+
+        }
         /// <summary>
         /// Lọc Hashtag từ table Si_Hashtag
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public async Task GetHashtag()
+        public async Task<List<string>> GetHashtagAsync()
         {
             TikTokPostDAO sql = new TikTokPostDAO(TiktokRuntime.Config.DbConnection.ConnectionToTableSiPost);
+            TikTokPostDAO sqlHashtag = new TikTokPostDAO(TiktokRuntime.Config.DbConnection.ConnectionToTableLinkProduct);
             DateTime fromDate = DateTime.Now.AddDays(-2);
             DateTime toDate = DateTime.Now;
             DateTime currentDate = DateTime.Now.AddDays(-1);
@@ -84,11 +150,11 @@ namespace VCCorp.TikTokCrawler.Controller
             //List<string> lstHashtag = sql.GetHashtagInTableSiHastag(fromDate.ToString("yyyy-MM-dd"), toDate.ToString("yyyy-MM-dd"));
 
             //Lấy hastag từ db trong chính xác 1 ngày
-            List<string> lstHashtag = sql.GetHashtagInTableSiHastagByCurrentDate(currentDate.ToString("yyyy-MM-dd"));
+            List<string> lstHashtag = await sqlHashtag.GetHashtagInTableSiHastagByCurrentDate(currentDate.ToString("yyyy-MM-dd"));
             sql.Dispose();
 
             List<string> lstDuplicate = new List<string>();//list trùng
-            List<string> lstCheckDuplicate = new List<string>();//list không trùng        
+            //List<string> lstCheckDuplicate = new List<string>();//list không trùng        
 
             for (int i = 0; i < lstHashtag.Count; i++)
             {
@@ -100,14 +166,10 @@ namespace VCCorp.TikTokCrawler.Controller
             }
 
             //Loại bỏ bản ghi trùng lặp
-            lstCheckDuplicate = lstDuplicate.Distinct().ToList();
+            _tags = lstDuplicate.Distinct().ToList();
 
             //lấy từng hashtag trong list không trùng để bóc
-            for (int i = 0; i < lstCheckDuplicate.Count; i++)
-            {
-                string Url = "https://www.tiktok.com/search?q=" + lstCheckDuplicate[i];
-                await CrawlHashtag(Url);
-            }
+            return _tags;
         }
 
 
@@ -121,13 +183,12 @@ namespace VCCorp.TikTokCrawler.Controller
             List<TikTokDTO> tiktokPost = new List<TikTokDTO>();
             var hashtagCheck = new TikTokHashtagCheckDAO();
             ushort indexLastContent = 0;
-            //List<string> videoIds = new List<string>();
             var videoIds = await hashtagCheck.SelectByHashtagAsync(_currHashtag);
             try
             {
                 await _browser.LoadUrlAsync(url);
                 Logging.Infomation("Load thành công url: " + url);
-                await Task.Delay(20_000);
+                await Task.Delay(6_000);
                 byte i = 0;
                 while (i < 100)
                 {
@@ -139,6 +200,7 @@ namespace VCCorp.TikTokCrawler.Controller
                     HtmlNodeCollection divComment = _document.DocumentNode.SelectNodes($"//div[contains(@class,'tiktok-1soki6-DivItemContainerForSearch')][position()>{indexLastContent}]");
                     if (divComment == null)
                     {
+                        await Logging.ErrorAsync("Không tìm kiếm được nội dung: " + _currHashtag);
                         break;
                     }
                     if (divComment != null)
@@ -168,7 +230,10 @@ namespace VCCorp.TikTokCrawler.Controller
                                 {
                                     createDate = Convert.ToDateTime(date);
                                 }
-                                catch { }
+                                catch (Exception ex)
+                                {
+                                    //Logging.Error(ex);
+                                }
                             }
                             content.create_time = createDate; // ngày tạo vid
                             content.post_id = idVid; //id video
@@ -177,13 +242,13 @@ namespace VCCorp.TikTokCrawler.Controller
                             content.update_time = createDate; // thời gian update
                             content.status = TiktokRuntime.Config.ConfigSystem.Status;
                             content.total_comment = ConvertPlayCount(getChar, convertNum);//play count
+                            content.hashtag = _currHashtag;
                             tiktokPost.Add(content);
 
                             //Lấy vid từ tháng 11
                             if (createDate > DateTime.Now.AddDays(-31))
                             {
                                 TikTokPostDAO msql = new TikTokPostDAO(TiktokRuntime.Config.DbConnection.ConnectionToTableSiPost);
-
                                 if (videoIds == null || String.IsNullOrEmpty(videoIds.url_ids))
                                 {
                                     Logging.Warning($"Hashtag {_currHashtag} chưa có video nào được crwal");
@@ -195,12 +260,11 @@ namespace VCCorp.TikTokCrawler.Controller
                                     videoIds.url_ids = "";
                                     videoIds.hashtag = _currHashtag;
                                 }
-
                                 if (!videoIds.url_ids.Contains(idVid))
                                 {
                                     Logging.Infomation("Bắt đầu thêm dữ liệu vào bảng tiktok_source_post");
                                     Logging.Warning("Bắt đầu cào video " + idVid);
-                                    Logging.Infomation(Crwal.Core.Base.Extensions.ToJson(content));
+                                    //Logging.Infomation(Crwal.Core.Base.Extensions.ToJson(content));
                                     await msql.InserTikTokSourcePostTable(content);
                                     msql.Dispose();
                                     #region gửi đi cho ILS
@@ -231,8 +295,6 @@ namespace VCCorp.TikTokCrawler.Controller
                             }
                             indexLastContent++;
                         }
-
-
                     }
                     //check JS nút xem thêm
                     string checkJs = await Common.Utilities.EvaluateJavaScriptSync(_jsLoadMore, _browser).ConfigureAwait(false);
@@ -240,12 +302,13 @@ namespace VCCorp.TikTokCrawler.Controller
                     {
                         break;
                     }
-                    await Task.Delay(10_000);
+                    await Task.Delay(6_000);
                 }
-                //Logging.Warning("Hastag " + currentHasTag);
-                //Logging.Warning("Videoids " + String.Join("#", videoIds.ToArray()));
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logging.Error(ex);
+            }
             return tiktokPost;
         }
         public int ConvertPlayCount(string specChar, int playCount)

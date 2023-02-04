@@ -10,17 +10,15 @@
     "UserDie": 100,
     "GetTokenBack": 101,
     "PageInvaliddate": 105,
-
     "Status": 0,
     "Platform": "tiktok",
-
     "KafkaConfig": {
       "SeverLink": "localhost:29092,localhost:29092",
       "TopicTikTokPost": "crawler-data-tiktok"
     }
   },
   "DbConnection": {
-    "ConnectionToTableLinkProduct": "Data Source=localhost,3306;Initial Catalog = social_index_v2; User ID = root; Password=Abcde12345",
+    "ConnectionToTableLinkProduct": "Data Source=192.168.23.22,3306;Initial Catalog = social_index_v2; User ID = hanhlv; Password=zr6CwgmiRb1TD7Ojh3Yn",
     "ConnectionToTableSiPost": "Data Source=localhost,3306;Initial Catalog = social_index_v2; User ID = root; Password = Abcde12345-",
     "ConnectionToTableReportDaily": "Server=localhost;User ID = root;Password=123456aA@;",
     "KeyBot": "5510917559:AAFc29FuT3isv31rJJ-Hf3U8J3TQm7wUjn8",
