@@ -35,12 +35,13 @@
             this.btResume = new Ext.RButton.RJButton();
             this.btResumeLastTag = new Ext.RButton.RJButton();
             this.txtUrl = new System.Windows.Forms.TextBox();
+            this.btShowDevTool = new Ext.RButton.RJButton();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Location = new System.Drawing.Point(12, 75);
             this.panel1.Name = "panel1";
@@ -76,9 +77,9 @@
             this.btStartedTag.FlatAppearance.BorderSize = 0;
             this.btStartedTag.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btStartedTag.ForeColor = System.Drawing.Color.White;
-            this.btStartedTag.Location = new System.Drawing.Point(150, 18);
+            this.btStartedTag.Location = new System.Drawing.Point(126, 18);
             this.btStartedTag.Name = "btStartedTag";
-            this.btStartedTag.Size = new System.Drawing.Size(178, 33);
+            this.btStartedTag.Size = new System.Drawing.Size(103, 33);
             this.btStartedTag.TabIndex = 0;
             this.btStartedTag.Text = "Bắt đầu crwal";
             this.btStartedTag.TextColor = System.Drawing.Color.White;
@@ -132,12 +133,32 @@
             this.txtUrl.Size = new System.Drawing.Size(529, 20);
             this.txtUrl.TabIndex = 10;
             // 
+            // btShowDevTool
+            // 
+            this.btShowDevTool.BackColor = System.Drawing.Color.Orange;
+            this.btShowDevTool.BackgroundColor = System.Drawing.Color.Orange;
+            this.btShowDevTool.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btShowDevTool.BorderRadius = 7;
+            this.btShowDevTool.BorderSize = 0;
+            this.btShowDevTool.FlatAppearance.BorderSize = 0;
+            this.btShowDevTool.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btShowDevTool.ForeColor = System.Drawing.Color.Transparent;
+            this.btShowDevTool.Location = new System.Drawing.Point(240, 18);
+            this.btShowDevTool.Name = "btShowDevTool";
+            this.btShowDevTool.Size = new System.Drawing.Size(103, 33);
+            this.btShowDevTool.TabIndex = 11;
+            this.btShowDevTool.Text = "DevTool";
+            this.btShowDevTool.TextColor = System.Drawing.Color.Transparent;
+            this.btShowDevTool.UseVisualStyleBackColor = false;
+            this.btShowDevTool.Click += new System.EventHandler(this.btShowDevTool_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1244, 611);
+            this.Controls.Add(this.btShowDevTool);
             this.Controls.Add(this.txtUrl);
             this.Controls.Add(this.btKingLive);
             this.Controls.Add(this.btStartedTag);
@@ -161,6 +182,7 @@
         private Ext.RButton.RJButton btStartedTag;
         private Ext.RButton.RJButton btKingLive;
         private System.Windows.Forms.TextBox txtUrl;
+        private Ext.RButton.RJButton btShowDevTool;
     }
 }
 

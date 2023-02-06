@@ -10,6 +10,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using VCCorp.TikTokCrawler.Model;
+using static System.Windows.Forms.LinkLabel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace VCCorp.TikTokCrawler.DAO
@@ -54,23 +55,38 @@ namespace VCCorp.TikTokCrawler.DAO
             {
                 await _conn.OpenAsync();
 
-                string query = "insert into social_index_v2.tiktok_source_post " +
-                    "(post_id,source_id,platform,link,create_time,update_time,crawled_time,status,total_comment) " +
-                    "values (@post_id,@platform,@link,@create_time,@update_time,@crawled_time,@status,@total_comment)";
-
+                //string query = "insert ignore into social_index_v2.tiktok_source_post " +
+                //    "(post_id,si_demand_source_id,platform,link,create_time,update_time,crawled_time,status,total_comment) " +
+                //    "values (@post_id,@platform,@link,@create_time,@update_time,@crawled_time,@status,@total_comment)";
+                //MySqlCommand cmd = new MySqlCommand();
+                //cmd.Connection = _conn;
+                //cmd.CommandText = query;
+                //cmd.Parameters.AddWithValue("@post_id", content.post_id);
+                //cmd.Parameters.AddWithValue("@platform", content.platform);
+                //cmd.Parameters.AddWithValue("@link", content.link);
+                //cmd.Parameters.AddWithValue("@si_demand_source_id", content.si_demand_source_id);
+                //cmd.Parameters.AddWithValue("@create_time", content.create_time);
+                //cmd.Parameters.AddWithValue("@update_time", content.update_time);
+                //cmd.Parameters.AddWithValue("@crawled_time", content.crawled_time);
+                //cmd.Parameters.AddWithValue("@status", content.status);
+                //cmd.Parameters.AddWithValue("@total_comment", content.total_comment);
+                string query = @"insert ignore into si_demand_source_post(si_demand_source_id, post_id, platform, link, create_time, update_time, crawled_time, status,  total_comment, user_crawler, index_slave) 
+                                values (@si_demand_source_id, @post_id, @platform, @link, @create_time, @update_time, @crawled_time, @status,  @total_comment, @user_crawler, @index_slave);";
                 MySqlCommand cmd = new MySqlCommand();
                 cmd.Connection = _conn;
                 cmd.CommandText = query;
-
+                cmd.Parameters.AddWithValue("@si_demand_source_id", content.si_demand_source_id);
                 cmd.Parameters.AddWithValue("@post_id", content.post_id);
                 cmd.Parameters.AddWithValue("@platform", content.platform);
                 cmd.Parameters.AddWithValue("@link", content.link);
-                cmd.Parameters.AddWithValue("@source_id", content.source_id);
                 cmd.Parameters.AddWithValue("@create_time", content.create_time);
                 cmd.Parameters.AddWithValue("@update_time", content.update_time);
                 cmd.Parameters.AddWithValue("@crawled_time", content.crawled_time);
                 cmd.Parameters.AddWithValue("@status", content.status);
                 cmd.Parameters.AddWithValue("@total_comment", content.total_comment);
+                cmd.Parameters.AddWithValue("@user_crawler", content.user_crawler);
+                cmd.Parameters.AddWithValue("@index_slave", content.index_slave);
+
 
 
                 await cmd.ExecuteNonQueryAsync();
@@ -152,25 +168,22 @@ namespace VCCorp.TikTokCrawler.DAO
             try
             {
                 await _conn.OpenAsync();
-                string query = @"insert into tiktok_source_post 
-                (source_id, post_id, platform, link, create_time, update_time, crawled_time, status, domain, status_link, total_comment, hashtag ) 
-                values (@source_id, @post_id, @platform, @link, @create_time, @update_time, @crawled_time, @status, @domain, @status_link, @total_comment, @hashtag );";
-
+                string query = @"insert ignore into si_demand_source_post(si_demand_source_id, post_id, platform, link, create_time, update_time, crawled_time, status,  total_comment, user_crawler, index_slave) 
+                                values (@si_demand_source_id, @post_id, @platform, @link, @create_time, @update_time, @crawled_time, @status,  @total_comment, @user_crawler, @index_slave);";
                 MySqlCommand cmd = new MySqlCommand();
                 cmd.Connection = _conn;
                 cmd.CommandText = query;
-                cmd.Parameters.AddWithValue("@source_id", content.source_id);
+                cmd.Parameters.AddWithValue("@si_demand_source_id", content.si_demand_source_id);
                 cmd.Parameters.AddWithValue("@post_id", content.post_id);
-                cmd.Parameters.AddWithValue("@platform", "");
+                cmd.Parameters.AddWithValue("@platform", content.platform);
                 cmd.Parameters.AddWithValue("@link", content.link);
                 cmd.Parameters.AddWithValue("@create_time", content.create_time);
                 cmd.Parameters.AddWithValue("@update_time", content.update_time);
                 cmd.Parameters.AddWithValue("@crawled_time", content.crawled_time);
                 cmd.Parameters.AddWithValue("@status", content.status);
-                cmd.Parameters.AddWithValue("@domain", content.domain);
-                cmd.Parameters.AddWithValue("@status_link", content.status_link);
                 cmd.Parameters.AddWithValue("@total_comment", content.total_comment);
-                cmd.Parameters.AddWithValue("@hashtag", content.hashtag);
+                cmd.Parameters.AddWithValue("@user_crawler", content.user_crawler);
+                cmd.Parameters.AddWithValue("@index_slave", content.index_slave);
                 await cmd.ExecuteNonQueryAsync();
 
                 res = 1;

@@ -20,7 +20,7 @@ namespace VCCorp.TikTokCrawler
         {
             InitializeComponent();
             InitBrowser("https://www.tiktok.com/");
-            tiktokHashtagController =  new TikTokHashTagController(_browser);
+            tiktokHashtagController = new TikTokHashTagController(_browser);
         }
 
 
@@ -81,7 +81,7 @@ namespace VCCorp.TikTokCrawler
             }
             catch (Exception ex)
             {
-                Logging.Error(ex, "Form_1 - button1_Click_1");
+                Logging.Error(ex, "Form_1 - btStartedTag_Click");
             }
         }
 
@@ -110,10 +110,9 @@ namespace VCCorp.TikTokCrawler
             txtUrl.Text = text;
         }
 
-
-        //public void EnableBtResume(bool e)
-        //{
-        //    btResume.Enabled = e;
-        //}
+        private void btShowDevTool_Click(object sender, EventArgs e)
+        {
+            _browser.ShowDevTools();
+        }
     }
 }

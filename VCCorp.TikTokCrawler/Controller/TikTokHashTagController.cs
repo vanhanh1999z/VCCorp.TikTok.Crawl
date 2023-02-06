@@ -60,7 +60,6 @@ namespace VCCorp.TikTokCrawler.Controller
                     break;
                 }
             }
-            Logging.Infomation("Đầu crwal dữ liệu TikTokHashTagController.CrawlData");
             //await GetHashTagFromFile();
         }
 
@@ -217,8 +216,6 @@ namespace VCCorp.TikTokCrawler.Controller
                             string idVid = Regex.Match(urlVid, @"(?<=/video/)\d+").Value; // lấy id_post
 
                             TikTokDTO content = new TikTokDTO();
-                            content.link = urlVid;
-                            content.post_id = idVid;
                             DateTime createDate = DateTime.Now;
                             string postDate = item.SelectSingleNode(".//div[contains(@class,'tiktok-842lvj-DivTimeTag')]")?.InnerText;
 
@@ -235,6 +232,7 @@ namespace VCCorp.TikTokCrawler.Controller
                                     //Logging.Error(ex);
                                 }
                             }
+                            content.link = urlVid;
                             content.create_time = createDate; // ngày tạo vid
                             content.post_id = idVid; //id video
                             content.platform = TiktokRuntime.Config.ConfigSystem.Platform;
@@ -244,11 +242,11 @@ namespace VCCorp.TikTokCrawler.Controller
                             content.total_comment = ConvertPlayCount(getChar, convertNum);//play count
                             content.hashtag = _currHashtag;
                             tiktokPost.Add(content);
-
                             //Lấy vid từ tháng 11
                             if (createDate > DateTime.Now.AddDays(-31))
                             {
                                 TikTokPostDAO msql = new TikTokPostDAO(TiktokRuntime.Config.DbConnection.ConnectionToTableSiPost);
+                                Logging.Fatal(videoIds.ToJson());
                                 if (videoIds == null || String.IsNullOrEmpty(videoIds.url_ids))
                                 {
                                     Logging.Warning($"Hashtag {_currHashtag} chưa có video nào được crwal");
@@ -264,7 +262,6 @@ namespace VCCorp.TikTokCrawler.Controller
                                 {
                                     Logging.Infomation("Bắt đầu thêm dữ liệu vào bảng tiktok_source_post");
                                     Logging.Warning("Bắt đầu cào video " + idVid);
-                                    //Logging.Infomation(Crwal.Core.Base.Extensions.ToJson(content));
                                     await msql.InserTikTokSourcePostTable(content);
                                     msql.Dispose();
                                     #region gửi đi cho ILS
