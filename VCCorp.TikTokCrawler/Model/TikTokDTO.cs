@@ -21,6 +21,7 @@ namespace VCCorp.TikTokCrawler.Model
         public int total_comment { get; set; }
         public string hashtag { get; set; }
         public string user_crawler { get; set; } = "Hanhlv";
+        public DateTime insert_time { get; set; } = DateTime.Now;
         public int index_slave { get; set; } = 0;
         public TikTokDTO(string post_id, DateTime create_time)
         {

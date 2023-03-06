@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -9,6 +10,8 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Crwal.Core.Constants;
 using VCCorp.TikTokCrawler.Model;
 using static System.Windows.Forms.LinkLabel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -168,8 +171,8 @@ namespace VCCorp.TikTokCrawler.DAO
             try
             {
                 await _conn.OpenAsync();
-                string query = @"insert ignore into si_demand_source_post(si_demand_source_id, post_id, platform, link, create_time, update_time, crawled_time, status,  total_comment, user_crawler, index_slave) 
-                                values (@si_demand_source_id, @post_id, @platform, @link, @create_time, @update_time, @crawled_time, @status,  @total_comment, @user_crawler, @index_slave);";
+                string query = @"insert ignore into si_demand_source_post(si_demand_source_id, post_id, platform, link, create_time, update_time, crawled_time, status,  total_comment, user_crawler,insert_time, index_slave) 
+                                values (@si_demand_source_id, @post_id, @platform, @link, @create_time, @update_time, @crawled_time, @status,  @total_comment, @user_crawler,@insert_time, @index_slave);";
                 MySqlCommand cmd = new MySqlCommand();
                 cmd.Connection = _conn;
                 cmd.CommandText = query;
@@ -184,6 +187,7 @@ namespace VCCorp.TikTokCrawler.DAO
                 cmd.Parameters.AddWithValue("@total_comment", content.total_comment);
                 cmd.Parameters.AddWithValue("@user_crawler", content.user_crawler);
                 cmd.Parameters.AddWithValue("@index_slave", content.index_slave);
+                cmd.Parameters.AddWithValue("@insert_time", content.insert_time);
                 await cmd.ExecuteNonQueryAsync();
 
                 res = 1;
@@ -339,7 +343,6 @@ namespace VCCorp.TikTokCrawler.DAO
 
             return data;
         }
-
         /// <summary>
         /// Select hashtag from si_hashtag table by current date
         /// </summary>
@@ -348,8 +351,9 @@ namespace VCCorp.TikTokCrawler.DAO
         public async Task<List<string>> GetHashtagInTableSiHastagByCurrentDate(string datetime)
         {
             List<string> data = new List<string>();
-            //string query = $"select * from social_index_v2.tiktok_hastag  WHERE create_time = '{datetime}' ";
-            string query = $"select * from social_index_v2.si_hashtag ";
+            int year = DateTime.Now.Year;
+            DateTime firstDay = new DateTime(year, 1, 1);
+            string query = $@"SELECT * FROM `social_index_v2`.`si_hashtag` WHERE `status` = '{(int)SysEnum.TikTokType.True}' ORDER BY `start_date`";
             try
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, _conn))
@@ -360,10 +364,8 @@ namespace VCCorp.TikTokCrawler.DAO
                         while (reader.Read())
                         {
                             data.Add(reader["hashtag"].ToString());
-
                         }
                     }
-
                 }
             }
             catch (Exception ex)
@@ -374,6 +376,5 @@ namespace VCCorp.TikTokCrawler.DAO
 
             return data;
         }
-
     }
 }

@@ -13,8 +13,10 @@
     "Status": 0,
     "Platform": "tiktok",
     "KafkaConfig": {
-      "SeverLink": "localhost:29092,localhost:29092",
+      "SeverLink": "10.3.48.81:9092,10.3.48.90:9092,10.3.48.91:9092",
       "TopicTikTokPost": "crawler-data-tiktok"
+      //"SeverLink": "localhost:29092,localhost:29092",
+      //"TopicTikTokPost": "crawler-data-tiktok"
     }
   },
   "DbConnection": {

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using VCCorp.TikTokCrawler.Model;
 using Newtonsoft.Json;
 using Crwal.Core.Base;
+using System.Reflection;
 
 namespace VCCorp.TikTokCrawler
 {
@@ -21,7 +22,8 @@ namespace VCCorp.TikTokCrawler
         [STAThread]
         static void Main()
         {
-            Logging.Init();
+            string appName = Assembly.GetCallingAssembly().GetName().Name;
+            Logging.Init(appName);
             try
             {
                 Program.Init();

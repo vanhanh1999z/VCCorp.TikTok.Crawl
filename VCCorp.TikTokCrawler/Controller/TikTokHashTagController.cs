@@ -1,11 +1,11 @@
 ﻿using CefSharp.DevTools.Debugger;
 using CefSharp.WinForms;
-using Crwal.Core.Attribute;
 using Crwal.Core.Base;
 using Crwal.Core.Log;
 using Crwal.Core.Sql;
 using Google.Protobuf;
 using HtmlAgilityPack;
+using LanguageDetection;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using VCCorp.TikTokCrawler.Common;
 using VCCorp.TikTokCrawler.DAO;
 using VCCorp.TikTokCrawler.Model;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace VCCorp.TikTokCrawler.Controller
@@ -60,6 +61,7 @@ namespace VCCorp.TikTokCrawler.Controller
                     break;
                 }
             }
+            Logging.Fatal("Hoàn thành");
             //await GetHashTagFromFile();
         }
 
@@ -101,6 +103,8 @@ namespace VCCorp.TikTokCrawler.Controller
                     break;
                 }
             }
+            Logging.Fatal("Hoàn thành");
+
         }
         public async Task ResumeCrawl(string currentHashTag)
         {
@@ -125,6 +129,7 @@ namespace VCCorp.TikTokCrawler.Controller
                             break;
                         }
                     }
+                    Logging.Fatal("Hoàn thành");
                 }
             }
             catch (Exception ex)
@@ -140,6 +145,7 @@ namespace VCCorp.TikTokCrawler.Controller
         /// <returns></returns>
         public async Task<List<string>> GetHashtagAsync()
         {
+
             TikTokPostDAO sql = new TikTokPostDAO(TiktokRuntime.Config.DbConnection.ConnectionToTableSiPost);
             TikTokPostDAO sqlHashtag = new TikTokPostDAO(TiktokRuntime.Config.DbConnection.ConnectionToTableLinkProduct);
             DateTime fromDate = DateTime.Now.AddDays(-2);
@@ -149,7 +155,7 @@ namespace VCCorp.TikTokCrawler.Controller
             //List<string> lstHashtag = sql.GetHashtagInTableSiHastag(fromDate.ToString("yyyy-MM-dd"), toDate.ToString("yyyy-MM-dd"));
 
             //Lấy hastag từ db trong chính xác 1 ngày
-            List<string> lstHashtag = await sqlHashtag.GetHashtagInTableSiHastagByCurrentDate(currentDate.ToString("yyyy-MM-dd"));
+            List<string> lstHashtag = await sqlHashtag.GetHashtagInTableSiHastagByCurrentDate(DateTime.Now.ToString("yyyy-MM-dd"));
             sql.Dispose();
 
             List<string> lstDuplicate = new List<string>();//list trùng
@@ -206,91 +212,98 @@ namespace VCCorp.TikTokCrawler.Controller
                     {
                         foreach (HtmlNode item in divComment)
                         {
-                            //tối ưu playCount về dạng int
-                            string numString = item.SelectSingleNode(".//strong[contains(@class,'tiktok-ws4x78-StrongVideoCount')]")?.InnerText;
-                            string getChar = Regex.Match(numString, @"\D$").Value;// tách lấy chữ (ví dụ 10K,10M... thì lấy K, M)
-                            string getFullNumAndChar = Regex.Match(numString, @".*\d+").Value;//tách lấy số và kí tự (dấu chấm)
-                            string getOnlyNum = getFullNumAndChar.Replace(".", string.Empty).ToLower();//loại bỏ dấu chấm chỉ lấy số (ví dụ 21.9)
-                            int convertNum = int.Parse(getOnlyNum.ToString());//convert sang int
-                            string urlVid = item.SelectSingleNode(".//div[contains(@class,'tiktok-yz6ijl-DivWrapper')]/a")?.Attributes["href"].Value;
-                            string idVid = Regex.Match(urlVid, @"(?<=/video/)\d+").Value; // lấy id_post
-
-                            TikTokDTO content = new TikTokDTO();
-                            DateTime createDate = DateTime.Now;
-                            string postDate = item.SelectSingleNode(".//div[contains(@class,'tiktok-842lvj-DivTimeTag')]")?.InnerText;
-
-                            if (!string.IsNullOrEmpty(postDate))
+                            LanguageDetector detector = new LanguageDetector();
+                            detector.AddAllLanguages();
+                            var title = Common.Utilities.RemoveSpecialCharacter(item.SelectSingleNode(".//div[contains(@class,'tiktok-1ejylhp-DivContainer')]/span[contains(@class,'tiktok-j2a19r-SpanText')][1]")?.InnerText);
+                            string country = detector.Detect(title);
+                            if (string.IsNullOrEmpty(title) == true || country == "vi")
                             {
-                                Common.DateTimeFormatAgain dtFomat = new Common.DateTimeFormatAgain();
-                                string date = dtFomat.GetDateBySearchText(postDate, "yyyy-MM-dd HH:mm:ss");
-                                try
+                                //tối ưu playCount về dạng int
+                                string numString = item.SelectSingleNode(".//strong[contains(@class,'tiktok-ws4x78-StrongVideoCount')]")?.InnerText;
+                                string getChar = Regex.Match(numString, @"\D$").Value;// tách lấy chữ (ví dụ 10K,10M... thì lấy K, M)
+                                string getFullNumAndChar = Regex.Match(numString, @".*\d+").Value;//tách lấy số và kí tự (dấu chấm)
+                                string getOnlyNum = getFullNumAndChar.Replace(".", string.Empty).ToLower();//loại bỏ dấu chấm chỉ lấy số (ví dụ 21.9)
+                                int convertNum = int.Parse(getOnlyNum.ToString());//convert sang int
+                                string urlVid = item.SelectSingleNode(".//div[contains(@class,'tiktok-yz6ijl-DivWrapper')]/a")?.Attributes["href"].Value;
+                                string idVid = Regex.Match(urlVid, @"(?<=/video/)\d+").Value; // lấy id_post
+
+                                TikTokDTO content = new TikTokDTO();
+                                DateTime createDate = DateTime.Now;
+                                string postDate = item.SelectSingleNode(".//div[contains(@class,'tiktok-842lvj-DivTimeTag')]")?.InnerText;
+
+                                if (!string.IsNullOrEmpty(postDate))
                                 {
-                                    createDate = Convert.ToDateTime(date);
-                                }
-                                catch (Exception ex)
-                                {
-                                    //Logging.Error(ex);
-                                }
-                            }
-                            content.link = urlVid;
-                            content.create_time = createDate; // ngày tạo vid
-                            content.post_id = idVid; //id video
-                            content.platform = TiktokRuntime.Config.ConfigSystem.Platform;
-                            content.crawled_time = DateTime.Now; // thời gian bóc
-                            content.update_time = createDate; // thời gian update
-                            content.status = TiktokRuntime.Config.ConfigSystem.Status;
-                            content.total_comment = ConvertPlayCount(getChar, convertNum);//play count
-                            content.hashtag = _currHashtag;
-                            tiktokPost.Add(content);
-                            //Lấy vid từ tháng 11
-                            if (createDate > DateTime.Now.AddDays(-31))
-                            {
-                                TikTokPostDAO msql = new TikTokPostDAO(TiktokRuntime.Config.DbConnection.ConnectionToTableSiPost);
-                                Logging.Fatal(videoIds.ToJson());
-                                if (videoIds == null || String.IsNullOrEmpty(videoIds.url_ids))
-                                {
-                                    Logging.Warning($"Hashtag {_currHashtag} chưa có video nào được crwal");
-                                    await hashtagCheck.Insert(new TikTokHastagCheckDTO()
+                                    Common.DateTimeFormatAgain dtFomat = new Common.DateTimeFormatAgain();
+                                    string date = dtFomat.GetDateBySearchText(postDate, "yyyy-MM-dd HH:mm:ss");
+                                    try
                                     {
-                                        hashtag = _currHashtag,
-                                        url_ids = "",
-                                    });
-                                    videoIds.url_ids = "";
-                                    videoIds.hashtag = _currHashtag;
+                                        createDate = Convert.ToDateTime(date);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        //Logging.Error(ex);
+                                    }
                                 }
-                                if (!videoIds.url_ids.Contains(idVid))
+                                content.link = urlVid;
+                                content.create_time = createDate; // ngày tạo vid
+                                content.post_id = idVid; //id video
+                                content.platform = TiktokRuntime.Config.ConfigSystem.Platform;
+                                content.crawled_time = DateTime.Now; // thời gian bóc
+                                content.update_time = createDate; // thời gian update
+                                content.status = TiktokRuntime.Config.ConfigSystem.Status;
+                                content.total_comment = ConvertPlayCount(getChar, convertNum);//play count
+                                content.hashtag = _currHashtag;
+                                tiktokPost.Add(content);
+                                var firstDayOfYear = new DateTime(DateTime.Now.Year, 1, 1);
+                                Console.WriteLine(DateTime.Compare(createDate, firstDayOfYear));
+                                if (DateTime.Compare(createDate, firstDayOfYear) >= 0 && DateTime.Compare(createDate, DateTime.Now) <= 0)
                                 {
-                                    Logging.Infomation("Bắt đầu thêm dữ liệu vào bảng tiktok_source_post");
-                                    Logging.Warning("Bắt đầu cào video " + idVid);
-                                    await msql.InserTikTokSourcePostTable(content);
-                                    msql.Dispose();
-                                    #region gửi đi cho ILS
-                                    Tiktok_Post_Kafka_Model kafka = new Tiktok_Post_Kafka_Model();
-                                    kafka.IdVideo = content.post_id;
-                                    kafka.UserName = item.SelectSingleNode(".//p[contains(@class,'tiktok-2zn17v-PUniqueId etrd4pu6')]")?.InnerText;
-                                    kafka.IdUser = "@" + kafka.UserName;
-                                    kafka.UrlUser = URL_TIKTOK + "@" + kafka.UserName;
-                                    kafka.Avatar = item.SelectSingleNode(".//span[contains(@class,'tiktok-tuohvl-SpanAvatarContainer')]//img")?.Attributes["src"]?.Value ?? "";
-                                    kafka.Content = Common.Utilities.RemoveSpecialCharacter(item.SelectSingleNode(".//div[contains(@class,'tiktok-1ejylhp-DivContainer')]/span[contains(@class,'tiktok-j2a19r-SpanText')][1]")?.InnerText);
-                                    kafka.LinkVideo = urlVid;
-                                    kafka.PlayCounts = ConvertPlayCount(getChar, convertNum);
-                                    kafka.TimePost = createDate;
-                                    kafka.TimePostTimeStamp = (double)(Date_Helper.ConvertDateTimeToTimeStamp(createDate));
-                                    kafka.TimeCreated = DateTime.Now;
-                                    kafka.TimeCreateTimeStamp = (double)(Date_Helper.ConvertDateTimeToTimeStamp(DateTime.Now));
-                                    string jsonPost = Kafka_Helper.ToJson<Tiktok_Post_Kafka_Model>(kafka);
-                                    Kafka_Helper kh = new Kafka_Helper();
-                                    await kh.InsertPost(jsonPost, "crawler-data-tiktok");
-                                    #endregion
-                                    videoIds.url_ids += "#" + idVid;
-                                    await hashtagCheck.UpdateAsync(videoIds);
+                                    TikTokPostDAO msql = new TikTokPostDAO(TiktokRuntime.Config.DbConnection.ConnectionToTableLinkProduct);
+                                    if (videoIds == null || String.IsNullOrEmpty(videoIds.url_ids))
+                                    {
+                                        Logging.Warning($"Hashtag {_currHashtag} chưa có video nào được crwal");
+                                        await hashtagCheck.Insert(new TikTokHastagCheckDTO()
+                                        {
+                                            hashtag = _currHashtag,
+                                            url_ids = "",
+                                        });
+                                        videoIds.url_ids = "";
+                                        videoIds.hashtag = _currHashtag;
+                                    }
+                                    if (!videoIds.url_ids.Contains(idVid))
+                                    {
+                                        Logging.Infomation("Bắt đầu thêm dữ liệu vào bảng tiktok_source_post");
+                                        Logging.Warning("Bắt đầu cào video " + idVid);
+                                        await msql.InserTikTokSourcePostTable(content);
+                                        msql.Dispose();
+                                        #region gửi đi cho ILS
+                                        Tiktok_Post_Kafka_Model kafka = new Tiktok_Post_Kafka_Model();
+                                        kafka.IdVideo = content.post_id;
+                                        kafka.UserName = item.SelectSingleNode(".//p[contains(@class,'tiktok-2zn17v-PUniqueId etrd4pu6')]")?.InnerText;
+                                        kafka.IdUser = "@" + kafka.UserName;
+                                        kafka.UrlUser = URL_TIKTOK + "@" + kafka.UserName;
+                                        kafka.Avatar = item.SelectSingleNode(".//span[contains(@class,'tiktok-tuohvl-SpanAvatarContainer')]//img")?.Attributes["src"]?.Value ?? "";
+                                        kafka.Content = Common.Utilities.RemoveSpecialCharacter(item.SelectSingleNode(".//div[contains(@class,'tiktok-1ejylhp-DivContainer')]/span[contains(@class,'tiktok-j2a19r-SpanText')][1]")?.InnerText);
+                                        kafka.LinkVideo = urlVid;
+                                        kafka.PlayCounts = ConvertPlayCount(getChar, convertNum);
+                                        kafka.TimePost = createDate;
+                                        kafka.TimePostTimeStamp = (double)(Date_Helper.ConvertDateTimeToTimeStamp(createDate));
+                                        kafka.TimeCreated = DateTime.Now;
+                                        kafka.TimeCreateTimeStamp = (double)(Date_Helper.ConvertDateTimeToTimeStamp(DateTime.Now));
+                                        string jsonPost = Kafka_Helper.ToJson<Tiktok_Post_Kafka_Model>(kafka);
+                                        Kafka_Helper kh = new Kafka_Helper();
+                                        await kh.InsertPost(jsonPost, "crawler-data-tiktok");
+                                        #endregion
+                                        videoIds.url_ids += "#" + idVid;
+                                        await hashtagCheck.UpdateAsync(videoIds);
+                                    }
+                                    else
+                                    {
+                                        Logging.Warning($"Video {idVid} đã được crwal");
+                                    }
                                 }
-                                else
-                                {
-                                    Logging.Warning($"Video {idVid} đã được crwal");
-                                }
+                                indexLastContent++;
                             }
-                            indexLastContent++;
                         }
                     }
                     //check JS nút xem thêm

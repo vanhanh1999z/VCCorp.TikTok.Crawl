@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VCCorp.TikTokCrawler", "VCCorp.TikTokCrawler\VCCorp.TikTokCrawler.csproj", "{367D843F-7D2C-47E2-8180-FBEA949C541D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crwal.Core", "..\Crawl_Core\Crwal.Core\Crwal.Core\Crwal.Core.csproj", "{372DE665-B14B-4D3F-AAD4-781E8A0EF48D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crwal.Core", "..\Crwal.Core\Crwal.Core\Crwal.Core.csproj", "{372DE665-B14B-4D3F-AAD4-781E8A0EF48D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
